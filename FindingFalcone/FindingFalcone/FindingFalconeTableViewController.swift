@@ -16,6 +16,8 @@ typealias DefaultVehicles = [DefaultVehicle]
 class FindingFalconeTableViewController: UITableViewController,VehicleSelectionDelegate,UIPopoverPresentationControllerDelegate,UIAdaptivePresentationControllerDelegate,StartAgainDelegate {
     var planetArray = [Planet]()
     var vehicleArray = [Vehicle]()
+    var testArray = [Vehicle]()
+
     var selectedPlanetRowIndex = [IndexPath]()
     var dict = [Planet:Vehicle]()
     var defaultVehicles = [DefaultVehicle]()
@@ -28,66 +30,102 @@ class FindingFalconeTableViewController: UITableViewController,VehicleSelectionD
     var activtyIndicator = UIActivityIndicatorView(style: .medium)
     var originalVehicleArray = [Vehicle]()
     let extractor = DataExtractor()
-    let urls = Urls()
+    let api = Api()
+    let kMaxThresholdForPlanetSelection = 4
 
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        activtyIndicator.center = self.view.center
-        activtyIndicator.style = .medium
+    fileprivate func getVehicles() {
         activtyIndicator.startAnimating()
-        self.view.addSubview(activtyIndicator)
-        self.title = "Finding Falcone!"
-        
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Reset", style: .plain, target: self, action: #selector(reset))
-        self.navigationItem.rightBarButtonItem!.isEnabled = false;
-
-
-        DispatchQueue.global().sync {
-            extractor.getVehicles(url: urls.vehiclesUrlString) { (vehicle:Vehicles?) in
-                if let aVehicle = vehicle{
-                    aVehicle.forEach({ (vehicleElement) in
-                        self.vehicleArray.append(vehicleElement)
-                        let defaultVehicle = DefaultVehicle(name: vehicleElement.name, totalNo: vehicleElement.totalNo, maxDistance: vehicleElement.maxDistance, speed: vehicleElement.speed)
-                        self.defaultVehicles.append(defaultVehicle)
-                    })
-                }
-            }
-
-            extractor.getPlanets(url: urls.planetUrlString) { (planet: Planets?) in
-                if let aPlanet = planet{
-                    aPlanet.forEach({ (planetElement) in
-                        self.planetArray.append(planetElement)
-                            DispatchQueue.main.async {
-                                self.tableView.reloadData()
-                                self.activtyIndicator.stopAnimating()
-                            }
-                    })
-                }
+        extractor.getVehicles(url: api.getVehiclesUrl) { (vehicle:Vehicles?) in
+            if let aVehicle = vehicle{
+                aVehicle.forEach({ (vehicleElement) in
+                    self.vehicleArray.append(vehicleElement)
+                    let defaultVehicle = DefaultVehicle(name: vehicleElement.name, totalNo: vehicleElement.totalNo, maxDistance: vehicleElement.maxDistance, speed: vehicleElement.speed)
+                    self.defaultVehicles.append(defaultVehicle)
+                    DispatchQueue.main.async {
+                        self.tableView.reloadData()
+                        self.activtyIndicator.stopAnimating()
+                    }
+                })
             }
         }
-      
+    }
+    
+    fileprivate func getVehiclesWithCompletionHandler(completion: @escaping (_ response: Vehicles?) -> Void){
+        activtyIndicator.startAnimating()
+        extractor.getVehicles(url: api.getVehiclesUrl) { (vehicle:Vehicles?) in
+            if let aVehicle = vehicle{
+                aVehicle.forEach({ (vehicleElement) in
+                    self.testArray.append(vehicleElement)
+//                    self.defaultVehicles.append(defaultVehicle)
+                    completion(self.testArray)
+//                    DispatchQueue.main.async {
+//                        self.tableView.reloadData()
+//                        self.activtyIndicator.stopAnimating()
+//                    }
+                })
+            }
+        }
+    }
+    
+    fileprivate func getPlanets() {
+        activtyIndicator.startAnimating()
+        extractor.getPlanets(url: api.getPlanetsUrl) { (planet: Planets?) in
+            if let aPlanet = planet{
+                aPlanet.forEach({ (planetElement) in
+                    self.planetArray.append(planetElement)
+                    DispatchQueue.main.async {
+                        self.tableView.reloadData()
+                        self.activtyIndicator.stopAnimating()
+                    }
+                })
+            }
+        }
+    }
+    
+    fileprivate func addActivityIndicator() {
+        activtyIndicator.center = self.view.center
+        activtyIndicator.style = .medium
+        self.view.addSubview(activtyIndicator)
+    }
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
 
-        // Uncomment the following line to preserve selection between presentations
-        // self.clearsSelectionOnViewWillAppear = false
-
-        // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
-        // self.navigationItem.rightBarButtonItem = self.editButtonItem
+        addActivityIndicator()
+        configureNavigationBar()
+        DispatchQueue.global().sync {
+            getVehicles()
+            getPlanets()
+        }
+    }
+ 
+    private func configureNavigationBar(){
+        self.title = "Finding Falcone!"
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Reset", style: .plain, target: self, action: #selector(reset))
+        self.navigationItem.rightBarButtonItem!.isEnabled = false;
+    }
+    
+    fileprivate func configureVehicleControllerNavigation(_ segue: UIStoryboardSegue) {
+        let vc = segue.destination as! VehiclesTableViewController
+        vc.vehicleArray = vehicleArray
+        vc.selectedPlanet = selectedPlanet
+        segue.destination.presentationController?.delegate = self;
+        vc.delegate = self
+    }
+    
+    fileprivate func configureStatusControllerNavigation(_ segue: UIStoryboardSegue) {
+        let vc = segue.destination as! StatusViewController
+        vc.findFalconeStatus = status
+        vc.delegate = self
+        vc.calculatedTime = timeTaken
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if segue.identifier == "VehiclePopOverId"
-        {
-            let vc = segue.destination as! VehiclesTableViewController
-            vc.vehicleArray = vehicleArray
-            vc.selectedPlanet = selectedPlanet
-            segue.destination.presentationController?.delegate = self;
-            vc.delegate = self
+        if segue.identifier == "VehiclePopOverId"{
+            configureVehicleControllerNavigation(segue)
         }
         else if segue.identifier == "ShowStatusSegue"{
-            let vc = segue.destination as! StatusViewController
-            vc.findFalconeStatus = status
-            vc.delegate = self
-            vc.calculatedTime = timeTaken
+            configureStatusControllerNavigation(segue)
         }
     }
     
@@ -97,7 +135,10 @@ class FindingFalconeTableViewController: UITableViewController,VehicleSelectionD
         selectedPlanetRowIndex.removeLast()
         selectedCount -= 1
         tableView.reloadData()
-        calculateTime()
+
+        let timeCalculator = TimeCalculator()
+        timeTaken = timeCalculator.calculateTime(dict: dict)
+        timeTakenStatusLabel?.text = "Time Taken : \(timeTaken)"
     }
     
     func adaptivePresentationStyle(for controller: UIPresentationController, traitCollection: UITraitCollection) -> UIModalPresentationStyle
@@ -114,7 +155,6 @@ class FindingFalconeTableViewController: UITableViewController,VehicleSelectionD
    
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        // #warning Incomplete implementation, return the number of rows
             return planetArray.count
     }
 
@@ -130,53 +170,11 @@ class FindingFalconeTableViewController: UITableViewController,VehicleSelectionD
         else{
             cell?.accessoryType = .none
         }
-        
 
         return cell!
     }
     
-    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-         let cell = tableView.cellForRow(at: indexPath)
-        
-        
-            if (cell?.accessoryType == UITableViewCell.AccessoryType.none) {
-                if selectedCount >= 4{
-                    cell?.accessoryType = .none;
-                    selectedPlanetRowIndex.removeAll{$0==indexPath}
-                    return
-            }
-            
-        }
-        
-        if (cell?.accessoryType == UITableViewCell.AccessoryType.none) {
-            cell?.accessoryType = .checkmark;
-            selectedPlanetRowIndex.append(indexPath)
-            selectedCount += 1
-            selectedPlanet = planetArray[indexPath.row]
-            self.performSegue(withIdentifier: "VehiclePopOverId", sender:self)
-        } else {
-            let planet = planetArray[indexPath.row]
-            let vehicle = dict[planet]
-            let extractedVehicle = self.vehicleArray.filter{$0.name == vehicle?.name}.first
-            
-//            let extractedVehicle = defaultVehicles.filter{$0.name == vehicle?.name}.first
-//            print(extractedVehicle!.totalNo)
-            extractedVehicle?.totalNo += 1
-//            print(extractedVehicle?.name)
-            dict[planet] = nil
-            cell?.accessoryType = .none;
-            selectedPlanetRowIndex.removeAll{$0==indexPath}
-            selectedCount -= 1
-            calculateTime()
-        }
-        if selectedCount < 4{
-            button?.isHidden = true
-            
-        }
-        else{
-            button?.isHidden = false
-        }
-        
+    fileprivate func handleResetButtonVisibility() {
         if selectedCount > 0 {
             self.navigationItem.rightBarButtonItem!.isEnabled = true;
         }
@@ -185,9 +183,65 @@ class FindingFalconeTableViewController: UITableViewController,VehicleSelectionD
         }
     }
     
-//    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-//        return 200
-//    }
+    fileprivate func handleFindingFalconeButtonVisibility() {
+        if selectedCount < 4 {
+            button?.isHidden = true
+        }
+        else {
+            button?.isHidden = false
+        }
+    }
+    
+    private func handlePlanetSelection(cell:CheckedTableViewCell?,indexPath:IndexPath){
+        cell?.accessoryType = .checkmark;
+        selectedPlanetRowIndex.append(indexPath)
+        selectedCount += 1
+        selectedPlanet = planetArray[indexPath.row]
+        self.performSegue(withIdentifier: "VehiclePopOverId", sender:self)
+    }
+    
+    fileprivate func handlePlanetDeselection(_ indexPath: IndexPath, _ cell: UITableViewCell?) {
+        let planet = planetArray[indexPath.row]
+        let vehicle = dict[planet]
+        let extractedVehicle = self.vehicleArray.filter{$0.name == vehicle?.name}.first
+        extractedVehicle?.totalNo += 1
+        dict[planet] = nil
+        cell?.accessoryType = .none;
+        selectedPlanetRowIndex.removeAll{$0==indexPath}
+        selectedCount -= 1
+        calculateTime()
+    }
+    
+    fileprivate func handleCellSelection(_ cell: UITableViewCell?, _ indexPath: IndexPath) {
+        if (cell?.accessoryType == UITableViewCell.AccessoryType.none) {
+            handlePlanetSelection(cell: cell as? CheckedTableViewCell, indexPath: indexPath)
+        }
+        else {
+            handlePlanetDeselection(indexPath, cell)
+        }
+    }
+    
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+         let cell = tableView.cellForRow(at: indexPath)
+        
+         if (cell?.accessoryType == UITableViewCell.AccessoryType.none) {
+            if(isMaxThresholdReached(cell: cell as? CheckedTableViewCell, indexPath: indexPath)){
+                return
+            }
+         }
+        handleCellSelection(cell, indexPath)
+        handleFindingFalconeButtonVisibility()
+        handleResetButtonVisibility()
+    }
+    
+    private func isMaxThresholdReached(cell:CheckedTableViewCell?,indexPath:IndexPath)->Bool{
+        if selectedCount >= kMaxThresholdForPlanetSelection{
+                cell?.accessoryType = .none;
+                selectedPlanetRowIndex.removeAll{$0==indexPath}
+                return true
+        }
+        return false
+    }
     
     override func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
        return 100
@@ -199,7 +253,7 @@ class FindingFalconeTableViewController: UITableViewController,VehicleSelectionD
         100)
         button = UIButton()
         button?.isHidden = true
-        button?.addTarget(self, action:#selector(self.pressed(sender:)), for: .touchUpInside)
+        button?.addTarget(self, action:#selector(self.findFalconeTapped(sender:)), for: .touchUpInside)
         button?.frame = CGRect(x: 0, y: 30, width: 300, height: 50)
         button?.setTitle("Find Falcone!", for: .normal)
         button?.setTitleColor( UIColor(red: 0, green: 0, blue: 1, alpha: 1), for: .normal)
@@ -214,30 +268,18 @@ class FindingFalconeTableViewController: UITableViewController,VehicleSelectionD
         return footerView
     }
     
-    @objc func pressed(sender: UIButton!) {
-        
-        activtyIndicator.startAnimating()
-
-        var planetNames = [String]()
-        var vehicleNames = [String]()
-        for element in dict{
-            planetNames.append(element.key.name)
-            vehicleNames.append(element.value.name)
-        }
-        
+    fileprivate func findFalcone(_ planetNames: [String], _ vehicleNames: [String]) {
         var token = ""
-        let urls = Urls()
-        let extractor = DataExtractor()
-        extractor.getGetToken(url: urls.getTokenUrl) { (tokenModel:TokenModel?) in
+        extractor.getGetToken(url: api.getTokenUrl) { (tokenModel:TokenModel?) in
             guard let aToken = tokenModel else{
                 print("Retrieving Token Failed")
                 return
             }
             token = aToken.token
-
+            
             if !token.isEmpty{
-                extractor.findFalcone(url: urls.findUrlString, body: PathFinder(token: token, planetNames: planetNames, vehicleNames:vehicleNames)) { (status:FindFalconeStatus?) in
-
+                self.extractor.findFalcone(url: self.api.findFalconeUrl, body: PathFinder(token: token, planetNames: planetNames, vehicleNames:vehicleNames)) { (status:FindFalconeStatus?) in
+                    
                     if let aStatus = status{
                         print("status\(aStatus)")
                         self.status = aStatus
@@ -251,9 +293,21 @@ class FindingFalconeTableViewController: UITableViewController,VehicleSelectionD
             }
         }
     }
+    
+    @objc func findFalconeTapped(sender: UIButton!) {
+        activtyIndicator.startAnimating()
+
+        var planetNames = [String]()
+        var vehicleNames = [String]()
+        for element in dict{
+            planetNames.append(element.key.name)
+            vehicleNames.append(element.value.name)
+        }
+        
+        findFalcone(planetNames, vehicleNames)
+    }
 
     func selectVehicle(vehicl: Vehicle) {
-//        let cell = tableView.cellForRow(at: selectedPlanetRowIndex.last!)
         let planet = planetArray[selectedPlanetRowIndex.last!.row]
         print(selectedPlanetRowIndex)
         dict[planet] = vehicl
@@ -275,22 +329,31 @@ class FindingFalconeTableViewController: UITableViewController,VehicleSelectionD
     }
     
     @objc func reset() {
-//        self.vehicleArray.removeAll()
         selectedCount = 0
         dict.removeAll()
         selectedPlanetRowIndex.removeAll()
         timeTaken = 0
-        self.vehicleArray.removeAll()
-        
-        extractor.getVehicles(url: urls.vehiclesUrlString) { (vehicle:Vehicles?) in
-            if let aVehicle = vehicle{
-                aVehicle.forEach({ (vehicleElement) in
-                    self.vehicleArray.append(vehicleElement)
-                    let defaultVehicle = DefaultVehicle(name: vehicleElement.name, totalNo: vehicleElement.totalNo, maxDistance: vehicleElement.maxDistance, speed: vehicleElement.speed)
-                    self.defaultVehicles.append(defaultVehicle)
-                })
-            }
-        }
+        self.vehicleArray.removeAll()        
+        getVehicles()
         self.tableView.reloadData()
+        self.navigationItem.rightBarButtonItem!.isEnabled = false;
+    }
+}
+
+
+struct TimeCalculator{
+    func calculateTime(dict:[Planet:Vehicle])->Int{
+        var time:Int = 0
+        for val in dict{
+            let planet = val.key
+            let vehicle = val.value
+            
+            let distance = planet.distance
+            let speed = vehicle.speed
+            time += distance/speed
+        }
+        return time
+//        timeTaken = time
+//        timeTakenStatusLabel?.text = "Time Taken : \(timeTaken)"
     }
 }

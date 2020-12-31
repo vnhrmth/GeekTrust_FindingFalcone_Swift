@@ -7,10 +7,10 @@
 
 import Foundation
 
-struct Urls {
-    let planetUrlString = "https://findfalcone.herokuapp.com/planets"
-    let vehiclesUrlString = "https://findfalcone.herokuapp.com/vehicles"
-    let findUrlString = "https://findfalcone.herokuapp.com/find"
+struct Api {
+    let getPlanetsUrl = "https://findfalcone.herokuapp.com/planets"
+    let getVehiclesUrl = "https://findfalcone.herokuapp.com/vehicles"
+    let findFalconeUrl = "https://findfalcone.herokuapp.com/find"
     let getTokenUrl = "https://findfalcone.herokuapp.com/token"
 }
 

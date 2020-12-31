@@ -53,16 +53,11 @@ class DataExtractor : Extractor {
         request.httpMethod = "POST"
         
         request.setValue("application/json", forHTTPHeaderField: "Accept")
-//        request.setValue("anotherHeaderValue", forHTTPHeaderField: "anotherHeaderField")
-
-//        let postString = "postDataKey=value"
-//        request.httpBody = postString.data(using: .utf8)
         let task = URLSession.shared.dataTask(with: request) { (data, response, error) in
             do {
                 guard let data = data else {
                     throw JSONError.NoData
                 }
-
                 let jsonDecoder = JSONDecoder()
                 let responseModel = try jsonDecoder.decode(TokenModel.self, from: data)
                 completion(responseModel)
