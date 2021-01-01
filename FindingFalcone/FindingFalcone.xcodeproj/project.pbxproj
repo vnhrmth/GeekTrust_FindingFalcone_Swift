@@ -18,6 +18,7 @@
 		596460DA259C6E6A0074FFD8 /* FindingFalconeTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 596460D9259C6E6A0074FFD8 /* FindingFalconeTableViewController.swift */; };
 		596460DF259C71670074FFD8 /* VehiclesTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 596460DE259C71670074FFD8 /* VehiclesTableViewController.swift */; };
 		59AF13FA259DAB67002CDEA9 /* StatusViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59AF13F9259DAB67002CDEA9 /* StatusViewController.swift */; };
+		59C4CF46259EEF7100F57C30 /* TimeCalculator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59C4CF45259EEF7100F57C30 /* TimeCalculator.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -34,6 +35,7 @@
 		596460D9259C6E6A0074FFD8 /* FindingFalconeTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FindingFalconeTableViewController.swift; sourceTree = "<group>"; };
 		596460DE259C71670074FFD8 /* VehiclesTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VehiclesTableViewController.swift; sourceTree = "<group>"; };
 		59AF13F9259DAB67002CDEA9 /* StatusViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusViewController.swift; sourceTree = "<group>"; };
+		59C4CF45259EEF7100F57C30 /* TimeCalculator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeCalculator.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -66,6 +68,7 @@
 		596460AB259B05C90074FFD8 /* FindingFalcone */ = {
 			isa = PBXGroup;
 			children = (
+				59C4CF44259EEF5000F57C30 /* Utilities */,
 				596460C7259B14F60074FFD8 /* DataLayer */,
 				596460C4259B0D2C0074FFD8 /* Models */,
 				596460AC259B05C90074FFD8 /* AppDelegate.swift */,
@@ -96,6 +99,14 @@
 				596460C8259B150C0074FFD8 /* DataExtractor.swift */,
 			);
 			path = DataLayer;
+			sourceTree = "<group>";
+		};
+		59C4CF44259EEF5000F57C30 /* Utilities */ = {
+			isa = PBXGroup;
+			children = (
+				59C4CF45259EEF7100F57C30 /* TimeCalculator.swift */,
+			);
+			path = Utilities;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -169,6 +180,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				596460DA259C6E6A0074FFD8 /* FindingFalconeTableViewController.swift in Sources */,
+				59C4CF46259EEF7100F57C30 /* TimeCalculator.swift in Sources */,
 				596460C2259B06470074FFD8 /* JsonModels.swift in Sources */,
 				596460DF259C71670074FFD8 /* VehiclesTableViewController.swift in Sources */,
 				596460C9259B150C0074FFD8 /* DataExtractor.swift in Sources */,
