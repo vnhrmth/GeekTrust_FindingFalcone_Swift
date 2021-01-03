@@ -19,6 +19,7 @@
 		596460DF259C71670074FFD8 /* VehiclesTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 596460DE259C71670074FFD8 /* VehiclesTableViewController.swift */; };
 		59AF13FA259DAB67002CDEA9 /* StatusViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59AF13F9259DAB67002CDEA9 /* StatusViewController.swift */; };
 		59C4CF46259EEF7100F57C30 /* TimeCalculator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59C4CF45259EEF7100F57C30 /* TimeCalculator.swift */; };
+		59C4CF4A259FF4A700F57C30 /* DataServices.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59C4CF49259FF4A700F57C30 /* DataServices.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -36,6 +37,7 @@
 		596460DE259C71670074FFD8 /* VehiclesTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VehiclesTableViewController.swift; sourceTree = "<group>"; };
 		59AF13F9259DAB67002CDEA9 /* StatusViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusViewController.swift; sourceTree = "<group>"; };
 		59C4CF45259EEF7100F57C30 /* TimeCalculator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeCalculator.swift; sourceTree = "<group>"; };
+		59C4CF49259FF4A700F57C30 /* DataServices.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataServices.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -68,19 +70,18 @@
 		596460AB259B05C90074FFD8 /* FindingFalcone */ = {
 			isa = PBXGroup;
 			children = (
+				59C4CF4D259FF4C500F57C30 /* TableViewCells */,
+				59C4CF4C259FF4B500F57C30 /* ViewControllers */,
+				59C4CF48259FF49600F57C30 /* Services */,
 				59C4CF44259EEF5000F57C30 /* Utilities */,
 				596460C7259B14F60074FFD8 /* DataLayer */,
 				596460C4259B0D2C0074FFD8 /* Models */,
 				596460AC259B05C90074FFD8 /* AppDelegate.swift */,
 				596460AE259B05C90074FFD8 /* SceneDelegate.swift */,
 				596460B2259B05C90074FFD8 /* Main.storyboard */,
-				59AF13F9259DAB67002CDEA9 /* StatusViewController.swift */,
-				596460D9259C6E6A0074FFD8 /* FindingFalconeTableViewController.swift */,
-				596460DE259C71670074FFD8 /* VehiclesTableViewController.swift */,
 				596460B5259B05CB0074FFD8 /* Assets.xcassets */,
 				596460B7259B05CB0074FFD8 /* LaunchScreen.storyboard */,
 				596460BA259B05CB0074FFD8 /* Info.plist */,
-				596460D6259B85660074FFD8 /* CheckedTableViewCell.swift */,
 			);
 			path = FindingFalcone;
 			sourceTree = "<group>";
@@ -107,6 +108,32 @@
 				59C4CF45259EEF7100F57C30 /* TimeCalculator.swift */,
 			);
 			path = Utilities;
+			sourceTree = "<group>";
+		};
+		59C4CF48259FF49600F57C30 /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				59C4CF49259FF4A700F57C30 /* DataServices.swift */,
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
+		59C4CF4C259FF4B500F57C30 /* ViewControllers */ = {
+			isa = PBXGroup;
+			children = (
+				59AF13F9259DAB67002CDEA9 /* StatusViewController.swift */,
+				596460D9259C6E6A0074FFD8 /* FindingFalconeTableViewController.swift */,
+				596460DE259C71670074FFD8 /* VehiclesTableViewController.swift */,
+			);
+			path = ViewControllers;
+			sourceTree = "<group>";
+		};
+		59C4CF4D259FF4C500F57C30 /* TableViewCells */ = {
+			isa = PBXGroup;
+			children = (
+				596460D6259B85660074FFD8 /* CheckedTableViewCell.swift */,
+			);
+			path = TableViewCells;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -184,6 +211,7 @@
 				596460C2259B06470074FFD8 /* JsonModels.swift in Sources */,
 				596460DF259C71670074FFD8 /* VehiclesTableViewController.swift in Sources */,
 				596460C9259B150C0074FFD8 /* DataExtractor.swift in Sources */,
+				59C4CF4A259FF4A700F57C30 /* DataServices.swift in Sources */,
 				59AF13FA259DAB67002CDEA9 /* StatusViewController.swift in Sources */,
 				596460AD259B05C90074FFD8 /* AppDelegate.swift in Sources */,
 				596460D7259B85660074FFD8 /* CheckedTableViewCell.swift in Sources */,

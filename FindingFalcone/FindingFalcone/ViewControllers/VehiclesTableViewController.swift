@@ -7,7 +7,7 @@
 
 import UIKit
 protocol VehicleSelectionDelegate{
-    func selectVehicle(vehicl:Vehicle)
+    func selectVehicle(vehicle:Vehicle)
 }
 
 class VehiclesTableViewController: UITableViewController {
@@ -67,9 +67,9 @@ class VehiclesTableViewController: UITableViewController {
         
         dismiss(animated: true) {
             if let delegate = self.delegate {
-                let vehicle = self.vehicleArray[self.selectedVehicleRowIndex.first!.row]
+                var vehicle = self.vehicleArray[self.selectedVehicleRowIndex.first!.row]
                 vehicle.totalNo -= 1
-                delegate.selectVehicle(vehicl:vehicle)
+                delegate.selectVehicle(vehicle:vehicle)
             }
         }
     }

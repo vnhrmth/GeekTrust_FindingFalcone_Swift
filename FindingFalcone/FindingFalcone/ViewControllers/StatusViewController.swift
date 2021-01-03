@@ -23,6 +23,10 @@ class StatusViewController: UIViewController {
     @IBOutlet weak var startAgainButton: UIButton!
     override func viewDidLoad() {
         super.viewDidLoad()
+        configureStatuses()
+    }
+    
+    func configureStatuses(){
         statusLabel.text = findFalconeStatus?.status
         timeTakenLabel.text = "Time Taken:\(calculatedTime)"
         planetFoundLabel.text = "Planet Found:\(findFalconeStatus?.planetName ?? "")"

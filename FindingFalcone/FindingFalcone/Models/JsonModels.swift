@@ -25,11 +25,13 @@ struct Planet: Codable,Hashable {
 
 typealias Planets = [Planet]
 
-class Vehicle: Codable {
+struct Vehicle: Codable {
     var name: String
     var totalNo : Int
     var maxDistance, speed: Int
-
+    
+    var initialArray=[Vehicle]()
+    
     enum CodingKeys: String, CodingKey {
         case name
         case totalNo = "total_no"
@@ -40,15 +42,21 @@ class Vehicle: Codable {
 
 typealias Vehicles = [Vehicle]
 
+
 struct PathFinder: Codable {
     let token: String
     let planetNames, vehicleNames: [String]
-
+    
     enum CodingKeys: String, CodingKey {
         case token
         case planetNames = "planet_names"
         case vehicleNames = "vehicle_names"
     }
+}
+
+struct FindFalconeMessageBody {
+    var token:String
+    let planetNames, vehicleNames: [String]
 }
 
 struct TokenModel: Codable {
@@ -57,7 +65,7 @@ struct TokenModel: Codable {
 
 struct FindFalconeStatus: Codable {
     let planetName, status: String
-
+    
     enum CodingKeys: String, CodingKey {
         case planetName = "planet_name"
         case status

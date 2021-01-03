@@ -7,21 +7,13 @@
 
 import UIKit
 
-struct DefaultVehicle {
-    let name: String
-    var totalNo : Int
-    let maxDistance, speed: Int
-}
-typealias DefaultVehicles = [DefaultVehicle]
-
-class FindingFalconeTableViewController: UITableViewController,VehicleSelectionDelegate,UIPopoverPresentationControllerDelegate,UIAdaptivePresentationControllerDelegate,StartAgainDelegate {
+class FindingFalconeTableViewController: UITableViewController,VehicleSelectionDelegate,UIAdaptivePresentationControllerDelegate,StartAgainDelegate {
     var planetArray = [Planet]()
     var vehicleArray = [Vehicle]()
-    var testArray = [Vehicle]()
-    
+        
     var selectedPlanetRowIndex = [IndexPath]()
-    var dict = [Planet:Vehicle]()
-    var defaultVehicles = [DefaultVehicle]()
+    var planetVehicleDictionary = [Planet:Vehicle]()
+
     var selectedCount : Int=0
     var selectedPlanet : Planet?
     var button : UIButton?
@@ -29,97 +21,95 @@ class FindingFalconeTableViewController: UITableViewController,VehicleSelectionD
     var status : FindFalconeStatus?
     var timeTaken:Int=0
     var activtyIndicator = UIActivityIndicatorView(style: .medium)
-    var originalVehicleArray = [Vehicle]()
     let extractor = DataExtractor()
     let api = Api()
     let kMaxThresholdForPlanetSelection = 4
     let timeCalculator = TimeCalculator()
-
+    let dataService = DataService()
+    
     // MARK: - Business Logic
     fileprivate func getVehicles() {
         activtyIndicator.startAnimating()
-        extractor.getData(url: api.getVehiclesUrl) { (vehicle:Vehicles?, error:JSONError?) in
-            
-            if let error = error{
-                let description = "\(error)"
-                self.showAlert(title: "Error Occured", message: description)
-                DispatchQueue.main.async {
+
+        self.dataService.getVehicles { (isSuccessful,error) in
+            DispatchQueue.main.async {
+                if(isSuccessful){
+                    self.vehicleArray.removeAll()
+                    self.vehicleArray = self.dataService.vehicleArray
+                    self.tableView.reloadData()
                     self.activtyIndicator.stopAnimating()
                 }
-                return
-            }
-            
-            if let aVehicle = vehicle{
-                aVehicle.forEach({ (vehicleElement) in
-                    self.vehicleArray.append(vehicleElement)
-                    let defaultVehicle = DefaultVehicle(name: vehicleElement.name, totalNo: vehicleElement.totalNo, maxDistance: vehicleElement.maxDistance, speed: vehicleElement.speed)
-                    self.defaultVehicles.append(defaultVehicle)
-                    DispatchQueue.main.async {
-                        self.tableView.reloadData()
-                        self.activtyIndicator.stopAnimating()
-                    }
-                })
+                else{
+                    self.activtyIndicator.stopAnimating()
+                    self.showAlert(title: "Error Occured", message: error)
+                }
             }
         }
     }
+    
     
     fileprivate func getPlanets() {
         activtyIndicator.startAnimating()
-        extractor.getData(url: api.getPlanetsUrl) { (planet: Planets?,error:JSONError?) in
-            
-            if let error = error{
-                let description = "\(error)"
-                self.showAlert(title: "Error Occured", message: description)
-                DispatchQueue.main.async {
+        self.dataService.getPlanets{(isSuccessful,error) in
+            DispatchQueue.main.async {
+                if(isSuccessful){
+                    self.planetArray = self.dataService.planetArray
+                    self.tableView.reloadData()
                     self.activtyIndicator.stopAnimating()
                 }
-                return
-            }
-            
-            if let aPlanet = planet{
-                aPlanet.forEach({ (planetElement) in
-                    self.planetArray.append(planetElement)
-                    DispatchQueue.main.async {
-                        self.tableView.reloadData()
-                        self.activtyIndicator.stopAnimating()
-                    }
-                })
-            }
-            print(planet!)
-            DispatchQueue.main.async {
-                self.activtyIndicator.stopAnimating()
+                else{
+                    
+                    self.activtyIndicator.stopAnimating()
+                    self.showAlert(title: "Error Occured", message: error)
+                }
             }
         }
     }
     
     
-    fileprivate func findFalcone(_ planetNames: [String], _ vehicleNames: [String]) {
-        var token = ""
-        extractor.postData(url: api.getTokenUrl) { (tokenModel:TokenModel?) in
-            guard let aToken = tokenModel else{
-                print("Retrieving Token Failed")
-                DispatchQueue.main.async {
+    func findFalcone(_ planetNames: [String], _ vehicleNames: [String]) {
+        let body = FindFalconeMessageBody(token:"",planetNames:planetNames,vehicleNames:vehicleNames)
+        self.dataService.findFalconeWithBody(body: body, completion: {(isSuccessful,error) in
+            DispatchQueue.main.async {
+                if(isSuccessful){
+                    self.status = self.dataService.status
+                    self.performSegue(withIdentifier: "ShowStatusSegue", sender: self)
                     self.activtyIndicator.stopAnimating()
                 }
-                return
-            }
-            token = aToken.token
-            
-            if !token.isEmpty{
-                self.extractor.findFalcone(url: self.api.findFalconeUrl, body: PathFinder(token: token, planetNames: planetNames, vehicleNames:vehicleNames)) { (status:FindFalconeStatus?) in
-                    
-                    if let aStatus = status{
-                        print("status\(aStatus)")
-                        self.status = aStatus
-                        DispatchQueue.main.async {
-                            self.performSegue(withIdentifier: "ShowStatusSegue", sender: self)
-                            self.activtyIndicator.stopAnimating()
-                        }
-                        
-                    }
+                else{
+                    self.activtyIndicator.stopAnimating()
+                    self.showAlert(title: "Error Occured", message: error)
                 }
             }
-        }
+        })
+        
+//        self.dataService.findFalcone
+//        var token = ""
+//        extractor.postData(url: api.getTokenUrl) { (tokenModel:TokenModel?) in
+//            guard let aToken = tokenModel else{
+//                print("Retrieving Token Failed")
+//                DispatchQueue.main.async {
+//                    self.activtyIndicator.stopAnimating()
+//                }
+//                return
+//            }
+//            token = aToken.token
+//
+//            if !token.isEmpty{
+//                self.extractor.findFalcone(url: self.api.findFalconeUrl, body: PathFinder(token: token, planetNames: planetNames, vehicleNames:vehicleNames)) { (status:FindFalconeStatus?) in
+//
+//                    if let aStatus = status{
+//                        print("status\(aStatus)")
+//                        self.status = aStatus
+//                        DispatchQueue.main.async {
+//                            self.performSegue(withIdentifier: "ShowStatusSegue", sender: self)
+//                            self.activtyIndicator.stopAnimating()
+//                        }
+//
+//                    }
+//                }
+//            }
+//        }
     }
     
     // MARK: - View Methods
@@ -161,7 +151,7 @@ class FindingFalconeTableViewController: UITableViewController,VehicleSelectionD
             button?.isHidden = false
         }
     }
-        
+    
     // MARK: - View Controller Methods
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -206,7 +196,7 @@ class FindingFalconeTableViewController: UITableViewController,VehicleSelectionD
         selectedCount -= 1
         tableView.reloadData()
         
-        let time = timeCalculator.calculateTime(dict: dict)
+        let time = timeCalculator.calculateTime(dict: planetVehicleDictionary)
         updateTimeTakenLabelText(time: time)
     }
     
@@ -242,7 +232,7 @@ class FindingFalconeTableViewController: UITableViewController,VehicleSelectionD
         
         return cell!
     }
-        
+    
     private func handlePlanetSelection(cell:CheckedTableViewCell?,indexPath:IndexPath){
         cell?.accessoryType = .checkmark;
         selectedPlanetRowIndex.append(indexPath)
@@ -253,15 +243,15 @@ class FindingFalconeTableViewController: UITableViewController,VehicleSelectionD
     
     fileprivate func handlePlanetDeselection(_ indexPath: IndexPath, _ cell: UITableViewCell?) {
         let planet = planetArray[indexPath.row]
-        let vehicle = dict[planet]
-        let extractedVehicle = self.vehicleArray.filter{$0.name == vehicle?.name}.first
+        let vehicle = planetVehicleDictionary[planet]
+        var extractedVehicle = self.vehicleArray.filter{$0.name == vehicle?.name}.first
         extractedVehicle?.totalNo += 1
-        dict[planet] = nil
+        planetVehicleDictionary[planet] = nil
         cell?.accessoryType = .none;
         selectedPlanetRowIndex.removeAll{$0==indexPath}
         selectedCount -= 1
         
-        let time = timeCalculator.calculateTime(dict: dict)
+        let time = timeCalculator.calculateTime(dict: planetVehicleDictionary)
         updateTimeTakenLabelText(time: time)
     }
     
@@ -327,7 +317,7 @@ class FindingFalconeTableViewController: UITableViewController,VehicleSelectionD
         
         var planetNames = [String]()
         var vehicleNames = [String]()
-        for element in dict{
+        for element in planetVehicleDictionary{
             planetNames.append(element.key.name)
             vehicleNames.append(element.value.name)
         }
@@ -335,12 +325,21 @@ class FindingFalconeTableViewController: UITableViewController,VehicleSelectionD
         findFalcone(planetNames, vehicleNames)
     }
     
-    func selectVehicle(vehicl: Vehicle) {
+    func selectVehicle(vehicle: Vehicle) {
         let planet = planetArray[selectedPlanetRowIndex.last!.row]
         print(selectedPlanetRowIndex)
-        dict[planet] = vehicl
-        let time = timeCalculator.calculateTime(dict: dict)
+        planetVehicleDictionary[planet] = vehicle
+        let time = timeCalculator.calculateTime(dict: planetVehicleDictionary)
         updateTimeTakenLabelText(time:time)
+        
+        let selectedVehicles = self.vehicleArray.filter{$0.name == vehicle.name}
+        var selectedVehicle = selectedVehicles.last
+        selectedVehicle?.totalNo = vehicle.totalNo
+        
+        if let index = self.vehicleArray.firstIndex(where: {$0.name == vehicle.name}) {
+            self.vehicleArray[index].totalNo = vehicle.totalNo
+        }
+
     }
     
     func updateTimeTakenLabelText(time:Int){
@@ -350,11 +349,11 @@ class FindingFalconeTableViewController: UITableViewController,VehicleSelectionD
     
     @objc func reset() {
         selectedCount = 0
-        dict.removeAll()
+        planetVehicleDictionary.removeAll()
         selectedPlanetRowIndex.removeAll()
         timeTaken = 0
-        self.vehicleArray.removeAll()        
-        getVehicles()
+        self.vehicleArray.removeAll()
+        self.vehicleArray.append(contentsOf: self.dataService.originalVehicleArray)
         self.tableView.reloadData()
         self.navigationItem.rightBarButtonItem!.isEnabled = false;
     }
