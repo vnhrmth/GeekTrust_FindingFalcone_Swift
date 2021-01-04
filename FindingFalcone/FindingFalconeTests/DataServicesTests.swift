@@ -313,7 +313,7 @@ class DataServicesTests: XCTestCase {
 //        }
 //    }
     
-    func testFindFalconeTokenWithSuccess(){
+    func testGetTokenWithSuccess(){
         
         let jsonData = """
         {
@@ -321,27 +321,20 @@ class DataServicesTests: XCTestCase {
         }
         """.data(using: .utf8)
 
-
-        let planetNames = ["Donlon","Enchai","Pingasor","Sapir"]
-        let vehicleNames = ["Space pod","Space rocket","Space rocket","Space rocket"]
-
         let response = HTTPURLResponse(url: URL(string: api.findFalconeUrl)!, statusCode: 200,
                                        httpVersion: nil, headerFields: nil)!
 
         let mockURLSession  = MockURLSession(data: jsonData, urlResponse: response, error: nil)
         let dataService = DataService(session: mockURLSession)
         
-        var vehicleExpectation :XCTestExpectation? = expectation(description: "is Success")
+        var isSuccessExpectation :XCTestExpectation? = expectation(description: "is Success")
         var isSuccessful: Bool = false
-        let findFalconeBody = FindFalconeMessageBody(token: "", planetNames: planetNames, vehicleNames: vehicleNames)
         
-        
-        dataService.findFalconeWithBody(body: findFalconeBody, completion: { (isSuccess, error) in
+        dataService.getToken { (isSuccess, token) in
             isSuccessful = isSuccess
-            vehicleExpectation?.fulfill()
-            vehicleExpectation = nil
-            print(isSuccessful)
-        })
+            isSuccessExpectation?.fulfill()
+            isSuccessExpectation =  nil
+        }
         
         waitForExpectations(timeout: 5) { (error) in
             XCTAssertTrue(isSuccessful)
