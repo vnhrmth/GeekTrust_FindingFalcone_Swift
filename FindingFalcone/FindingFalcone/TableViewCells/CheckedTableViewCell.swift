@@ -12,6 +12,8 @@ class CheckedTableViewCell: UITableViewCell {
 
     override func awakeFromNib() {
         super.awakeFromNib()
+        self.textLabel?.textColor = UIColor.white
+        self.tintColor = UIColor.white
         // Initialization code
     }
     

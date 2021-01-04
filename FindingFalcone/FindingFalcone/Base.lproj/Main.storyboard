@@ -3,50 +3,12 @@
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17703"/>
+        <capability name="Named colors" minToolsVersion="9.0"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
-        <!--Finding Falcone Table View Controller-->
-        <scene sceneID="hjI-AW-vwE">
-            <objects>
-                <tableViewController id="M00-rv-PDq" customClass="FindingFalconeTableViewController" customModule="FindingFalcone" customModuleProvider="target" sceneMemberID="viewController">
-                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" id="jlZ-GE-UxK">
-                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
-                        <prototypes>
-                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="CheckedTableViewCellId" id="ne8-5t-e6L" customClass="CheckedTableViewCell" customModule="FindingFalcone" customModuleProvider="target">
-                                <rect key="frame" x="0.0" y="28" width="414" height="43.5"/>
-                                <autoresizingMask key="autoresizingMask"/>
-                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="ne8-5t-e6L" id="nFA-NZ-nap">
-                                    <rect key="frame" x="0.0" y="0.0" width="414" height="43.5"/>
-                                    <autoresizingMask key="autoresizingMask"/>
-                                </tableViewCellContentView>
-                            </tableViewCell>
-                        </prototypes>
-                        <connections>
-                            <outlet property="dataSource" destination="M00-rv-PDq" id="sPI-q4-9h0"/>
-                            <outlet property="delegate" destination="M00-rv-PDq" id="rz7-1W-BO0"/>
-                        </connections>
-                    </tableView>
-                    <navigationItem key="navigationItem" id="Vm4-Fl-d8Z"/>
-                    <size key="freeformSize" width="414" height="896"/>
-                    <connections>
-                        <segue destination="QQy-PQ-bTa" kind="presentation" identifier="VehiclePopOverId" id="oFc-vJ-H1W"/>
-                        <segue destination="GbL-OM-o16" kind="show" identifier="ShowStatusSegue" id="bez-JA-iB7"/>
-                    </connections>
-                </tableViewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="yng-vl-stp" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
-                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" id="8Qq-8U-4Nw">
-                    <rect key="frame" x="0.0" y="0.0" width="46" height="30"/>
-                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                    <state key="normal" title="Button"/>
-                </button>
-            </objects>
-            <point key="canvasLocation" x="567" y="205"/>
-        </scene>
         <!--Vehicles Table View Controller-->
         <scene sceneID="vAG-bK-Xlc">
             <objects>
@@ -73,7 +35,97 @@
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="T7g-PC-WG8" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1284" y="205"/>
+            <point key="canvasLocation" x="725" y="830"/>
+        </scene>
+        <!--Home View Controller-->
+        <scene sceneID="3yC-Lk-x8D">
+            <objects>
+                <viewController id="0xH-JY-Tst" customClass="HomeViewController" customModule="FindingFalcone" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="BzI-ve-AlH">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="nBc-YS-f6W">
+                                <rect key="frame" x="0.0" y="88" width="414" height="400"/>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="400" id="NpL-XS-SM7"/>
+                                </constraints>
+                                <color key="sectionIndexBackgroundColor" name="AccentColor"/>
+                                <prototypes>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="CheckedTableViewCellId" id="lR8-bq-Igs" customClass="CheckedTableViewCell" customModule="FindingFalcone" customModuleProvider="target">
+                                        <rect key="frame" x="0.0" y="28" width="414" height="43.5"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="lR8-bq-Igs" id="XSi-9M-bel">
+                                            <rect key="frame" x="0.0" y="0.0" width="414" height="43.5"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                        </tableViewCellContentView>
+                                    </tableViewCell>
+                                </prototypes>
+                                <connections>
+                                    <outlet property="dataSource" destination="0xH-JY-Tst" id="MAl-oS-OrK"/>
+                                    <outlet property="delegate" destination="0xH-JY-Tst" id="fkL-eQ-pgI"/>
+                                </connections>
+                            </tableView>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="jfp-hd-dux">
+                                <rect key="frame" x="0.0" y="622" width="414" height="30"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="30" id="kDA-XR-2Y9"/>
+                                </constraints>
+                                <state key="normal" title="Button">
+                                    <color key="titleColor" systemColor="systemRedColor"/>
+                                </state>
+                                <connections>
+                                    <action selector="findFalconeTapped:" destination="0xH-JY-Tst" eventType="touchUpInside" id="6En-V8-RHk"/>
+                                </connections>
+                            </button>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Paf-sx-UcS">
+                                <rect key="frame" x="0.0" y="498" width="414" height="21"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="21" id="LDo-dB-7zO"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" systemColor="systemTealColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" image="RocketIcon" translatesAutoresizingMaskIntoConstraints="NO" id="ZuX-94-0kd">
+                                <rect key="frame" x="195" y="707" width="24" height="24"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="24" id="AeA-Eh-dpX"/>
+                                    <constraint firstAttribute="height" constant="24" id="IJS-0I-Izg"/>
+                                </constraints>
+                            </imageView>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="Vvf-JX-v8p"/>
+                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <color key="tintColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstItem="jfp-hd-dux" firstAttribute="top" secondItem="Paf-sx-UcS" secondAttribute="bottom" constant="103" id="GKM-0i-Nmn"/>
+                            <constraint firstItem="Paf-sx-UcS" firstAttribute="leading" secondItem="Vvf-JX-v8p" secondAttribute="leading" id="Hzf-Hk-uAk"/>
+                            <constraint firstItem="nBc-YS-f6W" firstAttribute="top" secondItem="Vvf-JX-v8p" secondAttribute="top" id="LRa-jn-1z3"/>
+                            <constraint firstItem="Vvf-JX-v8p" firstAttribute="trailing" secondItem="jfp-hd-dux" secondAttribute="trailing" id="VYO-JT-azh"/>
+                            <constraint firstItem="jfp-hd-dux" firstAttribute="leading" secondItem="Vvf-JX-v8p" secondAttribute="leading" id="c0g-LH-3nG"/>
+                            <constraint firstItem="ZuX-94-0kd" firstAttribute="top" secondItem="jfp-hd-dux" secondAttribute="bottom" constant="55" id="eYJ-kF-1F7"/>
+                            <constraint firstItem="Vvf-JX-v8p" firstAttribute="trailing" secondItem="Paf-sx-UcS" secondAttribute="trailing" id="efx-Ws-by1"/>
+                            <constraint firstItem="ZuX-94-0kd" firstAttribute="centerX" secondItem="BzI-ve-AlH" secondAttribute="centerX" id="lHp-iQ-XfS"/>
+                            <constraint firstItem="Paf-sx-UcS" firstAttribute="top" secondItem="nBc-YS-f6W" secondAttribute="bottom" constant="10" id="r6Y-Gi-z1o"/>
+                            <constraint firstItem="Vvf-JX-v8p" firstAttribute="trailing" secondItem="nBc-YS-f6W" secondAttribute="trailing" id="tlI-w7-UTf"/>
+                            <constraint firstItem="nBc-YS-f6W" firstAttribute="leading" secondItem="Vvf-JX-v8p" secondAttribute="leading" id="yUa-KJ-y9v"/>
+                        </constraints>
+                    </view>
+                    <navigationItem key="navigationItem" id="HQg-kF-dyP"/>
+                    <connections>
+                        <outlet property="findFalconeButton" destination="jfp-hd-dux" id="OaX-Bn-kTa"/>
+                        <outlet property="rocketIcon" destination="ZuX-94-0kd" id="4hQ-Sg-xEP"/>
+                        <outlet property="tableView" destination="nBc-YS-f6W" id="ntJ-z8-Rdo"/>
+                        <outlet property="timeTakenStatusLabel" destination="Paf-sx-UcS" id="iCy-9I-q3P"/>
+                        <segue destination="GbL-OM-o16" kind="show" identifier="ShowStatusSegue" id="Pyd-0Y-URb"/>
+                        <segue destination="QQy-PQ-bTa" kind="presentation" identifier="VehiclePopOverId" id="QjV-GV-M3b"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="llb-Kt-gMY" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="725" y="39"/>
         </scene>
         <!--Status View Controller-->
         <scene sceneID="n3r-pl-8Rk">
@@ -145,7 +197,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="4S0-eS-rXW" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="563.768115942029" y="955.58035714285711"/>
+            <point key="canvasLocation" x="1722" y="39"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="JQ9-gu-Ejq">
@@ -158,17 +210,27 @@
                     </navigationBar>
                     <nil name="viewControllers"/>
                     <connections>
-                        <segue destination="M00-rv-PDq" kind="relationship" relationship="rootViewController" id="HXA-jH-AuG"/>
+                        <segue destination="0xH-JY-Tst" kind="relationship" relationship="rootViewController" id="3EC-DK-Nxt"/>
                     </connections>
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="bxA-LG-Ws0" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-197.10144927536234" y="58.928571428571423"/>
+            <point key="canvasLocation" x="-229" y="39"/>
         </scene>
     </scenes>
     <resources>
+        <image name="RocketIcon" width="24" height="24"/>
+        <namedColor name="AccentColor">
+            <color red="0.0" green="0.46000000000000002" blue="0.89000000000000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+        <systemColor name="systemRedColor">
+            <color red="1" green="0.23137254901960785" blue="0.18823529411764706" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </systemColor>
+        <systemColor name="systemTealColor">
+            <color red="0.35294117647058826" green="0.78431372549019607" blue="0.98039215686274506" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
     </resources>
 </document>

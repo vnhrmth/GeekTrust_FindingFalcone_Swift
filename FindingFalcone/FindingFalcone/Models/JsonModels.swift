@@ -76,4 +76,8 @@ struct Status: Codable {
     let status: String
 }
 
+struct ResponseError:Codable {
+    let error:String
+}
+
 

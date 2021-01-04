@@ -50,42 +50,6 @@ class DataExtractor : Extractor {
         task.resume()
     }
     
-    //    func postData<T:Codable>(url:String,completion:@escaping(_ response:T?,_ error:JSONError?)->Void){
-    //        var request = URLRequest(url: URL(string: url)!)
-    //        request.httpMethod = "POST"
-    //
-    //        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-    //        request.setValue("application/json", forHTTPHeaderField: "Accept")
-    //        let task = URLSession.shared.dataTask(with: request) { (data, response, error) in
-    //            do {
-    //                guard let data = data,
-    //                        let response = response as? HTTPURLResponse,
-    //                        error == nil else {
-    //                        print("error", error ?? "Unknown error")
-    //                        throw JSONError.NoData
-    //                }
-    //
-    //                guard (200 ... 299) ~= response.statusCode else {                    // check for http errors
-    //                    print("statusCode should be 2xx, but is \(response.statusCode)")
-    //                    print("response = \(response)")
-    //                    throw JSONError.Unknown
-    //                }
-    //
-    //                let jsonDecoder = JSONDecoder()
-    //                let responseModel = try jsonDecoder.decode(T.self, from: data)
-    //                completion(responseModel,nil)
-    //            } catch let error as JSONError {
-    //                print(error)
-    //                completion(nil,error)
-    //            }
-    //                catch let error as NSError {
-    //                print(error.debugDescription)
-    //                completion(nil,error as? JSONError)
-    //            }
-    //        }
-    //        task.resume()
-    //    }
-    
     func postDataWithBody<T:Codable>(url:String,body:[AnyHashable: Any],completion:@escaping(_ response:T?,_ error:JSONError?)->Void){
         var request = URLRequest(url: URL(string: url)!)
         print(request)

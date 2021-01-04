@@ -1,23 +1,27 @@
 //
-//  FindingFalconeTableViewController.swift
+//  HomeViewController.swift
 //  FindingFalcone
 //
-//  Created by Vinay Hiremath on 30/12/20.
+//  Created by Vinay Hiremath on 04/01/21.
 //
 
 import UIKit
 
-class FindingFalconeTableViewController: UITableViewController,VehicleSelectionDelegate,UIAdaptivePresentationControllerDelegate,StartAgainDelegate {
+class HomeViewController: UIViewController,UITableViewDataSource,UITableViewDelegate,VehicleSelectionDelegate,UIAdaptivePresentationControllerDelegate,StartAgainDelegate  {
+    
+    @IBOutlet weak var rocketIcon: UIImageView!
     var planetArray = [Planet]()
     var vehicleArray = [Vehicle]()
         
+    @IBOutlet weak var findFalconeButton: UIButton!
+    @IBOutlet weak var tableView: UITableView!
     var selectedPlanetRowIndex = [IndexPath]()
     var planetVehicleDictionary = [Planet:Vehicle]()
 
+    @IBOutlet weak var timeTakenStatusLabel: UILabel!
     var selectedCount : Int=0
     var selectedPlanet : Planet?
     var button : UIButton?
-    var timeTakenStatusLabel:UILabel?
     var status : FindFalconeStatus?
     var timeTaken:Int=0
     var activtyIndicator = UIActivityIndicatorView(style: .medium)
@@ -26,6 +30,7 @@ class FindingFalconeTableViewController: UITableViewController,VehicleSelectionD
     let kMaxThresholdForPlanetSelection = 4
     let timeCalculator = TimeCalculator()
     let dataService = DataService(session: URLSession.shared)
+    
     
     // MARK: - Business Logic
     fileprivate func getVehicles() {
@@ -96,6 +101,7 @@ class FindingFalconeTableViewController: UITableViewController,VehicleSelectionD
     fileprivate func addActivityIndicator() {
         activtyIndicator.center = self.view.center
         activtyIndicator.style = .medium
+        activtyIndicator.color = UIColor.white
         self.view.addSubview(activtyIndicator)
     }
     
@@ -127,23 +133,39 @@ class FindingFalconeTableViewController: UITableViewController,VehicleSelectionD
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        //configureBackground()
+        configureBackground()
         addActivityIndicator()
         configureNavigationBar()
         DispatchQueue.global().sync {
             getVehicles()
             getPlanets()
         }
+//        self.tableView.backgroundColor = UIColor.blue
+
+        self.findFalconeButton.setTitle("Find Falcone!", for: .normal)
+        updateTimeTakenLabelText(time: 0)
+        rocketIcon.isHidden = true
     }
     
     func configureBackground(){
-        let colors = ColorHelper()
-        colors.gl.frame = tableView.bounds
-        colors.gl.colors = [colors.skyColor]
+        let topColor = UIColor(red: 75/255, green: 121/255, blue: 161/255, alpha: 1)
+        let bottomColor = UIColor(red: 40/255, green: 62/255, blue: 81/255, alpha: 1)
+        
+        let gradientBackgroundColors = [topColor.cgColor, bottomColor.cgColor]
+
+        let gradientLayer = CAGradientLayer()
+        gradientLayer.colors = gradientBackgroundColors
+        gradientLayer.locations = [0,1]
+
+        gradientLayer.frame = self.tableView.bounds
         let backgroundView = UIView(frame: self.tableView.bounds)
-        backgroundView.layer.insertSublayer(colors.gl, at: 0)
-        tableView.backgroundView = backgroundView
+        backgroundView.layer.insertSublayer(gradientLayer, at: 0)
+        self.tableView.backgroundView = backgroundView
+        
+//
+//        self.view.layer.insertSublayer(gradientLayer, at: 0)
     }
+    
 
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "VehiclePopOverId"{
@@ -178,6 +200,7 @@ class FindingFalconeTableViewController: UITableViewController,VehicleSelectionD
         
         let time = timeCalculator.calculateTime(dict: planetVehicleDictionary)
         updateTimeTakenLabelText(time: time)
+        handleResetButtonVisibility()
     }
     
     func adaptivePresentationStyle(for controller: UIPresentationController, traitCollection: UITraitCollection) -> UIModalPresentationStyle
@@ -187,18 +210,18 @@ class FindingFalconeTableViewController: UITableViewController,VehicleSelectionD
     
     // MARK: - Table view data source
     
-    override func numberOfSections(in tableView: UITableView) -> Int {
+     func numberOfSections(in tableView: UITableView) -> Int {
         // #warning Incomplete implementation, return the number of sections
         return 1
     }
     
     
-    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return planetArray.count
     }
     
-    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) ->
-    CheckedTableViewCell{
+     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) ->
+    UITableViewCell{
         // Configure the cell...
         let cell = tableView.dequeueReusableCell(withIdentifier: "CheckedTableViewCellId",
                                                  for: indexPath) as? CheckedTableViewCell
@@ -212,9 +235,13 @@ class FindingFalconeTableViewController: UITableViewController,VehicleSelectionD
         else{
             cell?.accessoryType = .none
         }
-        
         return cell!
     }
+    
+    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        cell.backgroundColor = UIColor.clear
+    }
+
     
     private func handlePlanetSelection(cell:CheckedTableViewCell?,indexPath:IndexPath){
         cell?.accessoryType = .checkmark;
@@ -262,11 +289,12 @@ class FindingFalconeTableViewController: UITableViewController,VehicleSelectionD
         }
     }
     
-    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let cell = tableView.cellForRow(at: indexPath)
         
         if (cell?.accessoryType == UITableViewCell.AccessoryType.none) {
             if(isMaxThresholdReached(cell: cell as? CheckedTableViewCell, indexPath: indexPath)){
+                showAlert(title: "Tap on finding falcone", message: "You already selected 4 planets")
                 return
             }
         }
@@ -274,6 +302,7 @@ class FindingFalconeTableViewController: UITableViewController,VehicleSelectionD
         handleFindingFalconeButtonVisibility()
         handleResetButtonVisibility()
     }
+    
     
     private func isMaxThresholdReached(cell:CheckedTableViewCell?,indexPath:IndexPath)->Bool{
         if selectedCount >= kMaxThresholdForPlanetSelection{
@@ -284,48 +313,75 @@ class FindingFalconeTableViewController: UITableViewController,VehicleSelectionD
         return false
     }
     
-    override func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
-        return 100
+    func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
+        return 0.1
     }
+//     func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
+//        let footerView = UIView()
+//        footerView.frame = CGRect(x: 0, y: 0, width: self.view.frame.width, height:
+//                                    100)
+//        button = UIButton()
+//        button?.isHidden = true
+//        button?.addTarget(self, action:#selector(self.findFalconeTapped(sender:)), for: .touchUpInside)
+//        button?.frame = CGRect(x: 0, y: 30, width: 300, height: 50)
+//        button?.setTitle("Find Falcone!", for: .normal)
+//        button?.setTitleColor( UIColor(red: 0, green: 0, blue: 1, alpha: 1), for: .normal)
+//
+//        timeTakenStatusLabel = UILabel()
+//        timeTakenStatusLabel?.text = "Time Taken : \(timeTaken)"
+//        timeTakenStatusLabel?.frame = CGRect(x: 20, y: 0, width: 300, height: 50)
+//        button?.setTitleColor( UIColor(red: 0, green: 0, blue: 1, alpha: 1), for: .normal)
+//
+//        footerView.addSubview(button!)
+//        footerView.addSubview(timeTakenStatusLabel!)
+//        return footerView
+//    }
     
-    override func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
-        let footerView = UIView()
-        footerView.frame = CGRect(x: 0, y: 0, width: self.view.frame.width, height:
-                                    100)
-        button = UIButton()
-        button?.isHidden = true
-        button?.addTarget(self, action:#selector(self.findFalconeTapped(sender:)), for: .touchUpInside)
-        button?.frame = CGRect(x: 0, y: 30, width: 300, height: 50)
-        button?.setTitle("Find Falcone!", for: .normal)
-        button?.setTitleColor( UIColor(red: 0, green: 0, blue: 1, alpha: 1), for: .normal)
-        
-        timeTakenStatusLabel = UILabel()
-        timeTakenStatusLabel?.text = "Time Taken : \(timeTaken)"
-        timeTakenStatusLabel?.frame = CGRect(x: 20, y: 0, width: 300, height: 50)
-        button?.setTitleColor( UIColor(red: 0, green: 0, blue: 1, alpha: 1), for: .normal)
-        
-        footerView.addSubview(button!)
-        footerView.addSubview(timeTakenStatusLabel!)
-        return footerView
-    }
-    
-    
-    @objc func findFalconeTapped(sender: UIButton!) {
+    @IBAction func findFalconeTapped(_ sender: Any) {
         activtyIndicator.startAnimating()
-        
+        self.view.isUserInteractionEnabled = false
         var planetNames = [String]()
         var vehicleNames = [String]()
         for element in planetVehicleDictionary{
             planetNames.append(element.key.name)
             vehicleNames.append(element.value.name)
         }
+        
+        self.rocketIcon.transform = CGAffineTransform(scaleX: 0.01, y: 0.01)
+        UIView.animate(
+           withDuration: 1.2,
+           delay: 0.0,
+           usingSpringWithDamping: 0.2,
+           initialSpringVelocity: 0.2,
+           options: .curveEaseOut,
+           animations: {
+                self.rocketIcon.isHidden = false
+               self.rocketIcon.transform = CGAffineTransform(scaleX: 1, y: 1)
+           },
+           completion: nil)
+
+
+        
+
         dataService.getToken { (isSuccess, token) in
             if(isSuccess){
                 let body = FindFalconeMessageBody(token: token, planetNames: planetNames, vehicleNames: vehicleNames)
                 self.findFalcone(body: body)
+                DispatchQueue.main.async {
+                    self.activtyIndicator.stopAnimating()
+                    self.view.isUserInteractionEnabled = true
+                    self.rocketIcon.layer.removeAllAnimations()
+                    self.rocketIcon.isHidden = true
+                }
             }
             else{
-                self.showAlert(title: "Error", message: "No token generated")
+                DispatchQueue.main.async {
+                    self.showAlert(title: "Error", message: "No token generated")
+                    self.activtyIndicator.stopAnimating()
+                    self.view.isUserInteractionEnabled = true
+                    self.rocketIcon.layer.removeAllAnimations()
+                    self.rocketIcon.isHidden = true
+                }
             }
         }
     }
@@ -361,5 +417,7 @@ class FindingFalconeTableViewController: UITableViewController,VehicleSelectionD
         self.vehicleArray.append(contentsOf: self.dataService.originalVehicleArray)
         self.tableView.reloadData()
         self.navigationItem.rightBarButtonItem!.isEnabled = false;
+        self.updateTimeTakenLabelText(time: timeTaken)
     }
+
 }

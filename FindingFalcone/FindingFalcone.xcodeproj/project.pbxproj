@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		59606A0725A35BF000FE3D74 /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59606A0625A35BF000FE3D74 /* HomeViewController.swift */; };
 		596460AD259B05C90074FFD8 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 596460AC259B05C90074FFD8 /* AppDelegate.swift */; };
 		596460AF259B05C90074FFD8 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 596460AE259B05C90074FFD8 /* SceneDelegate.swift */; };
 		596460B4259B05C90074FFD8 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 596460B2259B05C90074FFD8 /* Main.storyboard */; };
@@ -15,7 +16,6 @@
 		596460C2259B06470074FFD8 /* JsonModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 596460C1259B06470074FFD8 /* JsonModels.swift */; };
 		596460C9259B150C0074FFD8 /* DataExtractor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 596460C8259B150C0074FFD8 /* DataExtractor.swift */; };
 		596460D7259B85660074FFD8 /* CheckedTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 596460D6259B85660074FFD8 /* CheckedTableViewCell.swift */; };
-		596460DA259C6E6A0074FFD8 /* FindingFalconeTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 596460D9259C6E6A0074FFD8 /* FindingFalconeTableViewController.swift */; };
 		596460DF259C71670074FFD8 /* VehiclesTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 596460DE259C71670074FFD8 /* VehiclesTableViewController.swift */; };
 		59AF13FA259DAB67002CDEA9 /* StatusViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59AF13F9259DAB67002CDEA9 /* StatusViewController.swift */; };
 		59C4CF46259EEF7100F57C30 /* TimeCalculator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59C4CF45259EEF7100F57C30 /* TimeCalculator.swift */; };
@@ -38,6 +38,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		59606A0625A35BF000FE3D74 /* HomeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewController.swift; sourceTree = "<group>"; };
 		596460A9259B05C90074FFD8 /* FindingFalcone.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FindingFalcone.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		596460AC259B05C90074FFD8 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		596460AE259B05C90074FFD8 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -48,7 +49,6 @@
 		596460C1259B06470074FFD8 /* JsonModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JsonModels.swift; sourceTree = "<group>"; };
 		596460C8259B150C0074FFD8 /* DataExtractor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataExtractor.swift; sourceTree = "<group>"; };
 		596460D6259B85660074FFD8 /* CheckedTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckedTableViewCell.swift; sourceTree = "<group>"; };
-		596460D9259C6E6A0074FFD8 /* FindingFalconeTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FindingFalconeTableViewController.swift; sourceTree = "<group>"; };
 		596460DE259C71670074FFD8 /* VehiclesTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VehiclesTableViewController.swift; sourceTree = "<group>"; };
 		59AF13F9259DAB67002CDEA9 /* StatusViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusViewController.swift; sourceTree = "<group>"; };
 		59C4CF45259EEF7100F57C30 /* TimeCalculator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeCalculator.swift; sourceTree = "<group>"; };
@@ -154,8 +154,8 @@
 			isa = PBXGroup;
 			children = (
 				59AF13F9259DAB67002CDEA9 /* StatusViewController.swift */,
-				596460D9259C6E6A0074FFD8 /* FindingFalconeTableViewController.swift */,
 				596460DE259C71670074FFD8 /* VehiclesTableViewController.swift */,
+				59606A0625A35BF000FE3D74 /* HomeViewController.swift */,
 			);
 			path = ViewControllers;
 			sourceTree = "<group>";
@@ -280,7 +280,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				596460DA259C6E6A0074FFD8 /* FindingFalconeTableViewController.swift in Sources */,
 				59C4CF46259EEF7100F57C30 /* TimeCalculator.swift in Sources */,
 				596460C2259B06470074FFD8 /* JsonModels.swift in Sources */,
 				596460DF259C71670074FFD8 /* VehiclesTableViewController.swift in Sources */,
@@ -291,6 +290,7 @@
 				596460AD259B05C90074FFD8 /* AppDelegate.swift in Sources */,
 				596460D7259B85660074FFD8 /* CheckedTableViewCell.swift in Sources */,
 				596460AF259B05C90074FFD8 /* SceneDelegate.swift in Sources */,
+				59606A0725A35BF000FE3D74 /* HomeViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
