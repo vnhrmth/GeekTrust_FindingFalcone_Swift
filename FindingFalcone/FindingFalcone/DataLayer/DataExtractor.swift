@@ -153,13 +153,14 @@ class DataExtractor : Extractor {
                   let response = response as? HTTPURLResponse,
                   error == nil else {
                 print("error", error ?? "Unknown error")
-                
+                completion(nil,JSONError.NoData)
                 return
             }
             
             guard (200 ... 299) ~= response.statusCode else {
                 print("statusCode should be 2xx, but is \(response.statusCode)")
                 print("response = \(response)")
+                completion(nil,JSONError.ResponseError)
                 return
             }
             
@@ -189,4 +190,5 @@ enum JSONError: Error {
     case ConversionFailed
     case Unknown
     case SerializationError
+    case ResponseError
 }

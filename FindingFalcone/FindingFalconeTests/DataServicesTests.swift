@@ -67,7 +67,7 @@ class DataServicesTests: XCTestCase {
         
         let response = HTTPURLResponse(url: URL(string: api.getPlanetsUrl)!, statusCode: 200,
                                        httpVersion: nil, headerFields: nil)!
-
+        
         let mockURLSession  = MockURLSession(data: jsonData, urlResponse: response, error: nil)
         let dataService = DataService(session: mockURLSession)
         
@@ -118,7 +118,7 @@ class DataServicesTests: XCTestCase {
         
         let response = HTTPURLResponse(url: URL(string: api.getPlanetsUrl)!, statusCode: 400,
                                        httpVersion: nil, headerFields: nil)!
-
+        
         let mockURLSession  = MockURLSession(data: jsonData, urlResponse: response, error: nil)
         let dataService = DataService(session: mockURLSession)
         
@@ -188,7 +188,7 @@ class DataServicesTests: XCTestCase {
         
         let response = HTTPURLResponse(url: URL(string: api.getVehiclesUrl)!, statusCode: 200,
                                        httpVersion: nil, headerFields: nil)!
-
+        
         let mockURLSession  = MockURLSession(data: jsonData, urlResponse: response, error: nil)
         let dataService = DataService(session: mockURLSession)
         
@@ -240,7 +240,7 @@ class DataServicesTests: XCTestCase {
         
         let response = HTTPURLResponse(url: URL(string: api.getVehiclesUrl)!, statusCode: 400,
                                        httpVersion: nil, headerFields: nil)!
-
+        
         let mockURLSession  = MockURLSession(data: jsonData, urlResponse: response, error: nil)
         let dataService = DataService(session: mockURLSession)
         
@@ -259,59 +259,59 @@ class DataServicesTests: XCTestCase {
         }
     }
     
-//    func testGetVehiclesReturnsNSError(){
-//        let jsonData = """
-//            [
-//                    {
-//                        "name": "Space pod",
-//                        "total_no": 2,
-//                        "max_distance": 200,
-//                        "speed": 2
-//                    },
-//                    {
-//                        "name": "Space rocket",
-//                        "total_no": 1,
-//                        "max_distance": 300,
-//                        "speed": 4
-//                    },
-//                    {
-//                        "name": "Space shuttle",
-//                        "total_no": 1,
-//                        "max_distance": 400,
-//                        "speed": 5
-//                    },
-//                    {
-//                        "name": "Space ship",
-//                        "total_no": 2,
-//                        "max_distance": 600,
-//                        "speed": 10
-//                    }
-//                ]
-//            """
-//            .data(using: .utf8)
-//        
-//        let error = NSError(domain: "domain", code: 400, userInfo: nil)
-//        
-//        let response = HTTPURLResponse(url: URL(string: api.getVehiclesUrl)!, statusCode: 200,
-//                                       httpVersion: nil, headerFields: nil)!
-//
-//        let mockURLSession  = MockURLSession(data: jsonData, urlResponse: response, error: error)
-//        let dataService = DataService(session: mockURLSession)
-//        
-//        var vehicleExpectation :XCTestExpectation? = expectation(description: "is Success")
-//        var isSuccessful: Bool = false
-//        
-//        dataService.getVehicles { (isSuccess, error) in
-//            isSuccessful = isSuccess
-//            vehicleExpectation?.fulfill()
-//            vehicleExpectation = nil
-//            print(isSuccessful)
-//        }
-//        
-//        waitForExpectations(timeout: 5) { (error) in
-//            XCTAssertFalse(isSuccessful)
-//        }
-//    }
+    //    func testGetVehiclesReturnsNSError(){
+    //        let jsonData = """
+    //            [
+    //                    {
+    //                        "name": "Space pod",
+    //                        "total_no": 2,
+    //                        "max_distance": 200,
+    //                        "speed": 2
+    //                    },
+    //                    {
+    //                        "name": "Space rocket",
+    //                        "total_no": 1,
+    //                        "max_distance": 300,
+    //                        "speed": 4
+    //                    },
+    //                    {
+    //                        "name": "Space shuttle",
+    //                        "total_no": 1,
+    //                        "max_distance": 400,
+    //                        "speed": 5
+    //                    },
+    //                    {
+    //                        "name": "Space ship",
+    //                        "total_no": 2,
+    //                        "max_distance": 600,
+    //                        "speed": 10
+    //                    }
+    //                ]
+    //            """
+    //            .data(using: .utf8)
+    //        
+    //        let error = NSError(domain: "domain", code: 400, userInfo: nil)
+    //        
+    //        let response = HTTPURLResponse(url: URL(string: api.getVehiclesUrl)!, statusCode: 200,
+    //                                       httpVersion: nil, headerFields: nil)!
+    //
+    //        let mockURLSession  = MockURLSession(data: jsonData, urlResponse: response, error: error)
+    //        let dataService = DataService(session: mockURLSession)
+    //        
+    //        var vehicleExpectation :XCTestExpectation? = expectation(description: "is Success")
+    //        var isSuccessful: Bool = false
+    //        
+    //        dataService.getVehicles { (isSuccess, error) in
+    //            isSuccessful = isSuccess
+    //            vehicleExpectation?.fulfill()
+    //            vehicleExpectation = nil
+    //            print(isSuccessful)
+    //        }
+    //        
+    //        waitForExpectations(timeout: 5) { (error) in
+    //            XCTAssertFalse(isSuccessful)
+    //        }
+    //    }
     
     func testGetTokenWithSuccess(){
         
@@ -320,10 +320,10 @@ class DataServicesTests: XCTestCase {
             "token": "MQGMxbVhdlSJhTNMqwXaVmdOrLHnLsQP"
         }
         """.data(using: .utf8)
-
+        
         let response = HTTPURLResponse(url: URL(string: api.findFalconeUrl)!, statusCode: 200,
                                        httpVersion: nil, headerFields: nil)!
-
+        
         let mockURLSession  = MockURLSession(data: jsonData, urlResponse: response, error: nil)
         let dataService = DataService(session: mockURLSession)
         
@@ -340,6 +340,176 @@ class DataServicesTests: XCTestCase {
             XCTAssertTrue(isSuccessful)
         }
     }
+    
+    func testGetTokenWithFailure(){
+        let response = HTTPURLResponse(url: URL(string: api.findFalconeUrl)!, statusCode: 200,
+                                       httpVersion: nil, headerFields: nil)!
+        
+        let mockURLSession  = MockURLSession(data: nil, urlResponse: response, error: nil)
+        let dataService = DataService(session: mockURLSession)
+        
+        var isSuccessExpectation :XCTestExpectation? = expectation(description: "is Success")
+        var isSuccessful: Bool = false
+        
+        dataService.getToken { (isSuccess, token) in
+            isSuccessful = isSuccess
+            isSuccessExpectation?.fulfill()
+            isSuccessExpectation =  nil
+        }
+        
+        waitForExpectations(timeout: 5) { (error) in
+            XCTAssertFalse(isSuccessful)
+        }
+    }
+    
+    func testFindFalconeWithSuccess(){
+        let jsonData = """
+        {
+            "token": "MQGMxbVhdlSJhTNMqwXaVmdOrLHnLsQP"
+        }
+        """.data(using: .utf8)
+        
+        let response = HTTPURLResponse(url: URL(string: api.getTokenUrl)!, statusCode: 200,
+                                       httpVersion: nil, headerFields: nil)!
+        let mockURLSession  = MockURLSession(data: jsonData, urlResponse: response, error: nil)
+        
+        self.dataServices = DataService(session: mockURLSession)
+        var isSuccessExpectation :XCTestExpectation? = expectation(description: "is Success")
+        var isSuccessful: Bool = false
+        
+        dataServices?.getToken(completion: { (isSuccess, token) in
+            
+            let jsonData = """
+                           {
+                            "planet_name": "Enchai",
+                            "status": "success"
+                            }
+                           """.data(using: .utf8)
+            
+            let mockURLSession  = MockURLSession(data: jsonData, urlResponse: response, error: nil)
+
+            self.dataServices = DataService(session: mockURLSession)
+
+            self.dataServices?.findFalconeWithBody(body: FindFalconeMessageBody(token: token, planetNames: [
+                "Donlon",
+                "Enchai",
+                "Pingasor",
+                "Sapir"
+            ], vehicleNames: [
+                "Space pod",
+                "Space rocket",
+                "Space rocket",
+                "Space rocket"]), completion: { (isSuccess, error) in
+                    isSuccessful = isSuccess
+                    isSuccessExpectation?.fulfill()
+                    isSuccessExpectation =  nil
+                })
+        })
+        
+        waitForExpectations(timeout: 15) { (error) in
+            XCTAssertTrue(isSuccessful)
+        }
+    }
+    
+    func testFindFalconeWithFailedResponseCode(){
+        let jsonData = """
+        {
+            "token": "MQGMxbVhdlSJhTNMqwXaVmdOrLHnLsQP"
+        }
+        """.data(using: .utf8)
+        
+
+        let response = HTTPURLResponse(url: URL(string: api.getTokenUrl)!, statusCode: 200,
+                                       httpVersion: nil, headerFields: nil)!
+        let mockURLSession  = MockURLSession(data: jsonData, urlResponse: response, error: nil)
+        
+        self.dataServices = DataService(session: mockURLSession)
+        var isSuccessExpectation :XCTestExpectation? = expectation(description: "is Success")
+        var isSuccessful: Bool = false
+        
+        dataServices?.getToken(completion: { (isSuccess, token) in
+            
+            let jsonData = """
+                           {
+                            "planet_name": "Enchai",
+                            "status": "success"
+                            }
+                           """.data(using: .utf8)
+            
+            let response = HTTPURLResponse(url: URL(string: self.api.findFalconeUrl)!, statusCode: 400,
+                                           httpVersion: nil, headerFields: nil)!
+
+            let mockURLSession  = MockURLSession(data: jsonData, urlResponse: response, error: nil)
+
+            self.dataServices = DataService(session: mockURLSession)
+
+            self.dataServices?.findFalconeWithBody(body: FindFalconeMessageBody(token: token, planetNames: [
+                "Donlon",
+                "Enchai",
+                "Pingasor",
+                "Sapir"
+            ], vehicleNames: [
+                "Space pod",
+                "Space rocket",
+                "Space rocket",
+                "Space rocket"]), completion: { (isSuccess, error) in
+                    isSuccessful = isSuccess
+                    isSuccessExpectation?.fulfill()
+                    isSuccessExpectation =  nil
+                })
+        })
+        
+        waitForExpectations(timeout: 5) { (error) in
+            XCTAssertFalse(isSuccessful)
+        }
+    }
+    
+    func testFindFalconeWithNilData(){
+        let jsonData = """
+        {
+            "token": "MQGMxbVhdlSJhTNMqwXaVmdOrLHnLsQP"
+        }
+        """.data(using: .utf8)
+        
+
+        let response = HTTPURLResponse(url: URL(string: api.getTokenUrl)!, statusCode: 200,
+                                       httpVersion: nil, headerFields: nil)!
+        let mockURLSession  = MockURLSession(data: jsonData, urlResponse: response, error: nil)
+        
+        self.dataServices = DataService(session: mockURLSession)
+        var isSuccessExpectation :XCTestExpectation? = expectation(description: "is Success")
+        var isSuccessful: Bool = false
+        
+        dataServices?.getToken(completion: { (isSuccess, token) in
+            
+            let response = HTTPURLResponse(url: URL(string: self.api.findFalconeUrl)!, statusCode: 400,
+                                           httpVersion: nil, headerFields: nil)!
+
+            let mockURLSession  = MockURLSession(data: nil, urlResponse: response, error: nil)
+
+            self.dataServices = DataService(session: mockURLSession)
+
+            self.dataServices?.findFalconeWithBody(body: FindFalconeMessageBody(token: token, planetNames: [
+                "Donlon",
+                "Enchai",
+                "Pingasor",
+                "Sapir"
+            ], vehicleNames: [
+                "Space pod",
+                "Space rocket",
+                "Space rocket",
+                "Space rocket"]), completion: { (isSuccess, error) in
+                    isSuccessful = isSuccess
+                    isSuccessExpectation?.fulfill()
+                    isSuccessExpectation =  nil
+                })
+        })
+        
+        waitForExpectations(timeout: 5) { (error) in
+            XCTAssertFalse(isSuccessful)
+        }
+    }
+    
     
     override func setUpWithError() throws {
         // Put setup code here. This method is called before the invocation of each test method in the class.
