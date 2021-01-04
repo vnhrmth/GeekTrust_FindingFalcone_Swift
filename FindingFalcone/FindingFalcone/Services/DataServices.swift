@@ -20,6 +20,10 @@ class DataService : DataServicesProtocol{
     let api = Api()
     let extractor = DataExtractor()
     
+    init(session:URLSession) {
+        extractor.session = session
+    }
+    
     func getVehicles(completion:@escaping (Bool,String)->Void){
         extractor.getData(url: api.getVehiclesUrl) { (vehicles:Vehicles?, error:JSONError?)->Void in
             
@@ -59,28 +63,7 @@ class DataService : DataServicesProtocol{
         }
     }
     
-    fileprivate func findFalconWithToken(_ token:String,_ planetNames: [String], _ vehicleNames: [String], completion: @escaping(Bool,String)->Void) {
-        if !token.isEmpty{
-            self.extractor.findFalcone(url: self.api.findFalconeUrl, body: PathFinder(token: token, planetNames: planetNames, vehicleNames:vehicleNames)) { (status:FindFalconeStatus?,error:JSONError?) in
-                
-                if let error = error{
-                    let errorDesc = "\(error)"
-                    completion(false,errorDesc)
-                }
-                
-                if let aStatus = status{
-                    print("status\(aStatus)")
-                    self.status = aStatus
-                    completion(true,"")
-                    return
-                }
-                completion(false,"No Data")
-            }
-        }
-    }
-    
-    func findFalconeWithBody(body:FindFalconeMessageBody,completion: @escaping(Bool,String)->Void){
-        
+    func getToken(completion:@escaping(Bool,String)->Void){
         let tokenbody = ["":""]
         extractor.postDataWithBody(url: api.getTokenUrl, body: tokenbody) { (tokenModel:TokenModel?,error:JSONError?)->Void in
             guard let aToken = tokenModel else{
@@ -90,16 +73,34 @@ class DataService : DataServicesProtocol{
                     let errorDesc = "\(error)"
                     completion(false,errorDesc)
                 }
-                
                 return
             }
-            var aBody = body
-            aBody.token = aToken.token
+            completion(true,aToken.token)
+        }
+    }
+    
+    func findFalconeWithBody(body:FindFalconeMessageBody,completion: @escaping(Bool,String)->Void){
+        
+        
+//        let tokenbody = ["":""]
+//        extractor.postDataWithBody(url: api.getTokenUrl, body: tokenbody) { (tokenModel:TokenModel?,error:JSONError?)->Void in
+//            guard let aToken = tokenModel else{
+//                print("Retrieving Token Failed")
+//
+//                if let error = error{
+//                    let errorDesc = "\(error)"
+//                    completion(false,errorDesc)
+//                }
+//
+//                return
+//            }
+//            var aBody = body
+//            aBody.token = aToken.token
             
             
-            if !aBody.token.isEmpty{
+            if !body.token.isEmpty{
                 
-                let bodyParameters = ["token":aBody.token,"planet_names":aBody.planetNames,"vehicle_names":aBody.vehicleNames] as [String : Any]
+                let bodyParameters = ["token":body.token,"planet_names":body.planetNames,"vehicle_names":body.vehicleNames] as [String : Any]
 
                 self.extractor.findFalcone(url: self.api.findFalconeUrl, body: bodyParameters, completion:{(status:FindFalconeStatus?,error:JSONError?) in
 
@@ -124,5 +125,5 @@ class DataService : DataServicesProtocol{
                 })
             }
         }
-    }    
 }
+

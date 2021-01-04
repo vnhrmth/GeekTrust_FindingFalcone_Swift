@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct TimeCalculator{
+ struct TimeCalculator{
     func calculateTime(dict:[Planet:Vehicle])->Int{
         var time:Int = 0
         for val in dict{

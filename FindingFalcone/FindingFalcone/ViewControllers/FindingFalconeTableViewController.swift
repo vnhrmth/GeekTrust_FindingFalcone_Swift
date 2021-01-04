@@ -25,7 +25,7 @@ class FindingFalconeTableViewController: UITableViewController,VehicleSelectionD
     let api = Api()
     let kMaxThresholdForPlanetSelection = 4
     let timeCalculator = TimeCalculator()
-    let dataService = DataService()
+    let dataService = DataService(session: URLSession.shared)
     
     // MARK: - Business Logic
     fileprivate func getVehicles() {
@@ -67,8 +67,7 @@ class FindingFalconeTableViewController: UITableViewController,VehicleSelectionD
     }
     
     
-    func findFalcone(_ planetNames: [String], _ vehicleNames: [String]) {
-        let body = FindFalconeMessageBody(token:"",planetNames:planetNames,vehicleNames:vehicleNames)
+    func findFalcone(body:FindFalconeMessageBody) {
         self.dataService.findFalconeWithBody(body: body, completion: {(isSuccessful,error) in
             DispatchQueue.main.async {
                 if(isSuccessful){
@@ -82,34 +81,6 @@ class FindingFalconeTableViewController: UITableViewController,VehicleSelectionD
                 }
             }
         })
-        
-//        self.dataService.findFalcone
-//        var token = ""
-//        extractor.postData(url: api.getTokenUrl) { (tokenModel:TokenModel?) in
-//            guard let aToken = tokenModel else{
-//                print("Retrieving Token Failed")
-//                DispatchQueue.main.async {
-//                    self.activtyIndicator.stopAnimating()
-//                }
-//                return
-//            }
-//            token = aToken.token
-//
-//            if !token.isEmpty{
-//                self.extractor.findFalcone(url: self.api.findFalconeUrl, body: PathFinder(token: token, planetNames: planetNames, vehicleNames:vehicleNames)) { (status:FindFalconeStatus?) in
-//
-//                    if let aStatus = status{
-//                        print("status\(aStatus)")
-//                        self.status = aStatus
-//                        DispatchQueue.main.async {
-//                            self.performSegue(withIdentifier: "ShowStatusSegue", sender: self)
-//                            self.activtyIndicator.stopAnimating()
-//                        }
-//
-//                    }
-//                }
-//            }
-//        }
     }
     
     // MARK: - View Methods
@@ -156,6 +127,7 @@ class FindingFalconeTableViewController: UITableViewController,VehicleSelectionD
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        //configureBackground()
         addActivityIndicator()
         configureNavigationBar()
         DispatchQueue.global().sync {
@@ -164,7 +136,15 @@ class FindingFalconeTableViewController: UITableViewController,VehicleSelectionD
         }
     }
     
-    
+    func configureBackground(){
+        let colors = ColorHelper()
+        colors.gl.frame = tableView.bounds
+        colors.gl.colors = [colors.skyColor]
+        let backgroundView = UIView(frame: self.tableView.bounds)
+        backgroundView.layer.insertSublayer(colors.gl, at: 0)
+        tableView.backgroundView = backgroundView
+    }
+
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "VehiclePopOverId"{
             configureVehicleControllerNavigation(segue)
@@ -222,7 +202,10 @@ class FindingFalconeTableViewController: UITableViewController,VehicleSelectionD
         // Configure the cell...
         let cell = tableView.dequeueReusableCell(withIdentifier: "CheckedTableViewCellId",
                                                  for: indexPath) as? CheckedTableViewCell
+        
         cell?.textLabel?.text = planetArray[indexPath.row].name
+//        cell?.textLabel?.text?.append(planetVehicleDictionary[planetArray[indexPath.row]]?.name ?? "")
+        
         if selectedPlanetRowIndex.contains(indexPath){
             cell?.accessoryType = .checkmark
         }
@@ -244,8 +227,23 @@ class FindingFalconeTableViewController: UITableViewController,VehicleSelectionD
     fileprivate func handlePlanetDeselection(_ indexPath: IndexPath, _ cell: UITableViewCell?) {
         let planet = planetArray[indexPath.row]
         let vehicle = planetVehicleDictionary[planet]
-        var extractedVehicle = self.vehicleArray.filter{$0.name == vehicle?.name}.first
-        extractedVehicle?.totalNo += 1
+        
+        let updatedVehicleArray = self.vehicleArray.map({ (aVehicle) -> Vehicle in
+            // You can check anything like:
+            if aVehicle.name == vehicle?.name {
+                var modified = aVehicle
+                modified.totalNo += 1
+                return modified
+            } else {
+                return aVehicle
+            }
+        })
+        
+        self.vehicleArray.removeAll()
+        self.vehicleArray.append(contentsOf: updatedVehicleArray)
+
+//        var extractedVehicle = self.vehicleArray.filter{$0.name == vehicle?.name}.first
+//        extractedVehicle?.totalNo += 1
         planetVehicleDictionary[planet] = nil
         cell?.accessoryType = .none;
         selectedPlanetRowIndex.removeAll{$0==indexPath}
@@ -321,8 +319,15 @@ class FindingFalconeTableViewController: UITableViewController,VehicleSelectionD
             planetNames.append(element.key.name)
             vehicleNames.append(element.value.name)
         }
-        
-        findFalcone(planetNames, vehicleNames)
+        dataService.getToken { (isSuccess, token) in
+            if(isSuccess){
+                let body = FindFalconeMessageBody(token: token, planetNames: planetNames, vehicleNames: vehicleNames)
+                self.findFalcone(body: body)
+            }
+            else{
+                self.showAlert(title: "Error", message: "No token generated")
+            }
+        }
     }
     
     func selectVehicle(vehicle: Vehicle) {
